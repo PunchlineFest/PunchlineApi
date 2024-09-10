@@ -48,6 +48,7 @@ class Event implements DatedInterface
     public function __construct()
     {
         $this->artists = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
