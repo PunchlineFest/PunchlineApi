@@ -59,15 +59,40 @@ class ArtistFixtures extends Fixture implements FixtureGroupInterface
     private function getData(): iterable
     {
         $faker = $this->fakerFactory;
+        $pseudos = $this->getArtistNames();
 
-        for ($i = 0; $i < 100; ++$i) {
+        for ($i = 0; $i < 18; ++$i) {
             $data = [
-                'email' => $faker->email,
-                'name' => $faker->name,
+                'name' => $pseudos[$i],
                 'description' => $faker->text,
-                'category' => ''
+                'category' => 'rap'
             ];
             yield $data;
         }
+    }
+
+    private function getArtistNames(): array
+    {
+        return [
+            "Zola",
+            "Leto",
+            "Dinos",
+            "Koba LaD",
+            "Uzi",
+            "Josman",
+            "Laylow",
+            "Ziak",
+            "Gambi",
+            "Ninho",
+            "SCH",
+            "Jul",
+            "Vald",
+            "PNL",
+            "Heuss L’Enfoiré",
+            "Damso",
+            "Soso Maness",
+            "Nekfeu",
+            "Gazo",
+        ];
     }
 }

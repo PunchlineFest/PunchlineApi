@@ -65,12 +65,24 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
     {
         $faker = $this->fakerFactory;
 
-        for ($i = 1; $i < 100; ++$i) {
+        for ($i = 0; $i < 9; ++$i) {
             yield [
                 'name' => $faker->word,
-                'date' => $faker->dateTime('now'),
+                'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
                 'category' => '',
                 'type' => 'concert',
+                'description' => $faker->paragraph,
+                'address' => $faker->address,
+                'coordinates' => [$faker->latitude, $faker->longitude]
+            ];
+        }
+
+        for ($i = 10; $i < 18; ++$i) {
+            yield [
+                'name' => $faker->word,
+                'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
+                'category' => '',
+                'type' => 'conférence',
                 'description' => $faker->paragraph,
                 'address' => $faker->address,
                 'coordinates' => [$faker->latitude, $faker->longitude]
