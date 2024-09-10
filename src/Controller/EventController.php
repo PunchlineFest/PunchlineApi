@@ -22,8 +22,8 @@ class EventController extends BaseController
     public function index(Request $request): JsonResponse
     {
         try {
-            $criteria = $request->query->all('criteria') ?? [];
-            $orderBy = $request->query->all('order') ?? ['date' => 'DESC'];
+            $criteria = $request->query->all() ?? [];
+            $orderBy = ['date' => 'DESC'];
 
             $events = $this->eventRepository->findByAndFilter($criteria, $orderBy);
 
