@@ -45,7 +45,7 @@ class Artist implements DatedInterface
         return $this->name;
     }
 
-    public function setName(?string $name): void
+    public function setName(?string $name): static
     {
         $this->name = $name;
     }
@@ -55,7 +55,7 @@ class Artist implements DatedInterface
         return $this->category;
     }
 
-    public function setCategory(?string $category): void
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
     }
@@ -65,7 +65,7 @@ class Artist implements DatedInterface
         return $this->description;
     }
 
-    public function setDescription(?string $description): void
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
     }

@@ -16,20 +16,25 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-    //    /**
-    //     * @return Event[] Returns an array of Event objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return Event[] Returns an array of Event objects
+         */
+        public function findByAndFilter($criteria, $orderBy): array
+        {
+            $query = $this->createQueryBuilder('e');
+
+            foreach ($criteria as $key => $value) {
+                $query->andWhere("e.$key = :val")
+                    ->setParameter('val', $value);
+            }
+
+            foreach ($orderBy as $property => $order) {
+                $query->orderBy("e.$property", $order);
+            }
+
+            return $query->getQuery()
+                ->getResult();
+        }
 
     //    public function findOneBySomeField($value): ?Event
     //    {
