@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Event;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -31,14 +32,35 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
 
     public function load(ObjectManager $manager): void
     {
-        $i = 1;
-        foreach ($this->getData() as $data) {
+        $events = new ArrayCollection();
 
+        foreach ($this->getFirstDayEvents() as $data) {
             $entity = $this->createEvent($data);
-            $artist = $this->getReference(ArtistFixtures::getArtistReference((string) $i));
-            $entity->addArtist($artist);
             $manager->persist($entity);
-            ++$i;
+            $events->add($entity);
+        }
+
+        foreach ($this->getSecondDayEvents() as $data) {
+            $entity = $this->createEvent($data);
+            $manager->persist($entity);
+            $events->add($entity);
+        }
+
+        foreach ($this->getThirdDayEvents() as $data) {
+            $entity = $this->createEvent($data);
+            $manager->persist($entity);
+            $events->add($entity);
+        }
+
+        $nb_artistes = 18;
+        $artiste_index = 0;
+        foreach ($events as $index => $event) {
+            $artistes_a_ajouter = ($index < $nb_artistes % count($events)) ? 4 : 3;
+
+            for ($i = 0; $i < $artistes_a_ajouter && $artiste_index < $nb_artistes; $i++) {
+                $event->addArtist($this->getReference(ArtistFixtures::getArtistReference((string) $artiste_index)));
+                $artiste_index++;
+            }
         }
 
         $manager->flush();
@@ -61,32 +83,78 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
         return $entity;
     }
 
-    private function getData(): iterable
+    private function getFirstDayEvents(): iterable
     {
         $faker = $this->fakerFactory;
+        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
 
-        for ($i = 0; $i < 9; ++$i) {
-            yield [
-                'name' => $faker->word,
-                'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
-                'category' => '',
-                'type' => 'concert',
-                'description' => $faker->paragraph,
-                'address' => $faker->address,
-                'coordinates' => [$faker->latitude, $faker->longitude]
-            ];
-        }
+        yield [
+            'name' => 'Scène principale',
+            'date' => $date,
+            'category' => 'rap',
+            'type' => 'concert',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.258028, 5.381417]
+        ];
+        yield [
+            'name' => 'Atelier graffiti',
+            'date' => $date,
+            'category' => 'hip-hop',
+            'type' => 'atelier',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.259528, 5.380278]
+        ];
+    }
 
-        for ($i = 10; $i < 18; ++$i) {
-            yield [
-                'name' => $faker->word,
-                'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
-                'category' => '',
-                'type' => 'conférence',
-                'description' => $faker->paragraph,
-                'address' => $faker->address,
-                'coordinates' => [$faker->latitude, $faker->longitude]
-            ];
-        }
+    private function getSecondDayEvents(): iterable
+    {
+        $faker = $this->fakerFactory;
+        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
+
+        yield [
+            'name' => 'Buvette du Lac',
+            'date' => $date,
+            'category' => null,
+            'type' => 'restaurant',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.261111, 5.381999]
+        ];
+        yield [
+            'name' => 'Atelier DJing',
+            'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
+            'category' => 'rap',
+            'type' => 'atelier',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.259833, 5.380083]
+        ];
+    }
+
+    private function getThirdDayEvents(): iterable
+    {
+        $faker = $this->fakerFactory;
+        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
+
+        yield [
+            'name' => 'Atelier de Breakdance',
+            'date' => $date,
+            'category' => 'rap',
+            'type' => 'atelier',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.260028, 5.380611]
+        ];
+        yield [
+            'name' => 'Conférence',
+            'date' => $date,
+            'category' => 'hip-hop',
+            'type' => 'conférence',
+            'description' => $faker->paragraph,
+            'address' => '',
+            'coordinates' => [43.260250, 5.380111]
+        ];
     }
 }
