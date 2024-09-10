@@ -7,10 +7,10 @@ use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
+#[Route('/api')]
 class EventController extends BaseController
 {
     public function __construct(
@@ -37,15 +37,8 @@ class EventController extends BaseController
     public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
         try {
-//            $event = new Event();
-//            $this->setProperties($event, $request->getPayload());
-            $event = (new Event())
-                ->setDate(new \DateTime($request->getPayload()->get('date')))
-                ->setCategory($request->getPayload()->get('category'))
-                ->setType($request->getPayload()->get('type'))
-                ->setName($request->getPayload()->get('name'))
-                ->setDescription($request->getPayload()->get('description'))
-            ;
+            $event = new Event();
+            $this->setProperties($event, $request->getPayload());
 
             $em->persist($event);
             $em->flush();
@@ -71,27 +64,8 @@ class EventController extends BaseController
     {
         try {
             $event = $this->eventRepository->find($id);
-            $data = $request->getPayload()->all();
 
-            if (\array_key_exists('date', $data)) {
-                $event->setDate(new \DateTime($data['date']));
-            }
-
-            if (\array_key_exists('name', $data)) {
-                $event->setName($data['name']);
-            }
-
-            if (\array_key_exists('description', $data)) {
-                $event->setDescription($data['description']);
-            }
-
-            if (\array_key_exists('type', $data)) {
-                $event->setType($data['type']);
-            }
-
-            if (\array_key_exists('category', $data)) {
-                $event->setCategory($data['category']);
-            }
+            $this->setProperties($event, $request->getPayload());
 
             $em->flush();
 

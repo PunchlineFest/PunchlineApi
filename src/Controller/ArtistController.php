@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\Artist;
 use App\Repository\ArtistRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
-class ArtistController extends AbstractController
+#[Route('/api')]
+class ArtistController extends BaseController
 {
     public function __construct(
         private ArtistRepository $artistRepository
@@ -37,13 +37,8 @@ class ArtistController extends AbstractController
     public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
         try {
-//            $artist = new Artist();
-//            $this->setProperties($artist, $request->getPayload());
-            $artist = (new Artist())
-                ->setCategory($request->getPayload()->get('category'))
-                ->setName($request->getPayload()->get('name'))
-                ->setDescription($request->getPayload()->get('description'))
-            ;
+            $artist = new Artist();
+            $this->setProperties($artist, $request->getPayload());
 
             $em->persist($artist);
             $em->flush();
@@ -69,19 +64,8 @@ class ArtistController extends AbstractController
     {
         try {
             $artist = $this->artistRepository->find($id);
-            $data = $request->getPayload()->all();
 
-            if (\array_key_exists('name', $data)) {
-                $artist->setName($data['name']);
-            }
-
-            if (\array_key_exists('description', $data)) {
-                $artist->setDescription($data['description']);
-            }
-
-            if (\array_key_exists('category', $data)) {
-                $artist->setCategory($data['category']);
-            }
+            $this->setProperties($artist, $request->getPayload());
 
             $em->flush();
 
