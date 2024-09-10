@@ -1,11 +1,10 @@
 API - PunchlineFest
 ========================
 
-- [Server](#server)
-    - [Requirements](#requirements)
-    - [Installation](#installation)
-        - [Database](#database)
-    - [Usage](#usage)
+- [Requirements](#requirements)
+- [Installation](#installation)
+    - [Database](#database)
+- [Usage](#usage)
 
 ### Requirements
 
