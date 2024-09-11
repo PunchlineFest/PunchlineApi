@@ -23,6 +23,12 @@ class EventRepository extends ServiceEntityRepository
         {
             $query = $this->createQueryBuilder('e');
 
+            if (\array_key_exists('types', $criteria)) {
+                $query->andWhere('e.type IN (:types)')
+                    ->setParameter('types', $criteria['types']);
+            }
+            unset($criteria['types']);
+
             foreach ($criteria as $key => $value) {
                 $query->andWhere("e.$key = :val")
                     ->setParameter('val', $value);
