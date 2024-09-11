@@ -19,9 +19,15 @@ class EventRepository extends ServiceEntityRepository
         /**
          * @return Event[] Returns an array of Event objects
          */
-        public function findByAndFilter($criteria, $orderBy): array
+        public function findByAndFilter($criteria, $orderBy, $groupBy = null): array
         {
             $query = $this->createQueryBuilder('e');
+
+            if (\array_key_exists('types', $criteria)) {
+                $query->andWhere('e.type IN (:types)')
+                    ->setParameter('types', $criteria['types']);
+            }
+            unset($criteria['types']);
 
             foreach ($criteria as $key => $value) {
                 $query->andWhere("e.$key = :val")
@@ -32,8 +38,20 @@ class EventRepository extends ServiceEntityRepository
                 $query->orderBy("e.$property", $order);
             }
 
-            return $query->getQuery()
-                ->getResult();
+            if ($groupBy) {
+                $results = $query->getQuery()->getResult();
+
+                $groupedResults = [];
+                foreach ($results as $result) {
+                    $date = $result->getDate()->format('Y-m-d');
+                    $groupedResults[$date][] = $result;
+                }
+
+                return $groupedResults;
+            } else {
+                return $query->getQuery()
+                    ->getResult();
+            }
         }
 
     //    public function findOneBySomeField($value): ?Event

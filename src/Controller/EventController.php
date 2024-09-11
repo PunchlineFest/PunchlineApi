@@ -166,4 +166,74 @@ class EventController extends BaseController
             return $this->json($e->getMessage(), 500);
         }
     }
+
+    #[Route('/events/grouped-by-date', name: 'app_events_grouped_by', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Successful response',
+        content: new OA\JsonContent(
+            type: 'object',
+            example: [
+                '2024-09-10' => [
+                    [
+                        'id' => 1,
+                        'title' => 'Event 1',
+                        'created_at' => '2024-09-10',
+                        // ... autres propriétés d'un Event
+                    ],
+                    [
+                        'id' => 2,
+                        'title' => 'Event 2',
+                        'created_at' => '2024-09-10',
+                        // ... autres propriétés d'un Event
+                    ]
+                ],
+                '2024-09-11' => [
+                    [
+                        'id' => 3,
+                        'title' => 'Event 3',
+                        'created_at' => '2024-09-11',
+                        // ... autres propriétés d'un Event
+                    ]
+                ]
+            ],
+            additionalProperties: new OA\AdditionalProperties(
+                type: 'array',
+                items: new OA\Items(ref: new Model(type: Event::class))
+            )
+        )
+    )]
+    #[OA\Response(
+        response: 500,
+        description: 'Server error',
+    )]
+    #[OA\Parameter(
+        name: 'name',
+        in: 'query',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'category',
+        in: 'query',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'type',
+        in: 'query',
+        schema: new OA\Schema(type: 'string')
+    )]
+    public function getGroupedByDateAction(Request $request): JsonResponse
+    {
+        try {
+            $criteria = $request->query->all() ?? [];
+            $orderBy = ['date' => 'DESC'];
+            $groupedBy = ['date'];
+
+            $events = $this->eventRepository->findByAndFilter($criteria, $orderBy, $groupedBy);
+
+            return $this->json($events, 200);
+        } catch (throwable $e) {
+            return $this->json($e->getMessage());
+        }
+    }
 }
