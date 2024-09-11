@@ -29,6 +29,14 @@ class EventRepository extends ServiceEntityRepository
             }
             unset($criteria['types']);
 
+            if (\array_key_exists('search', $criteria)) {
+                $query->leftJoin('e.artists', 'artiste') // Joindre la relation artiste
+                    ->addSelect('artiste')
+                    ->andWhere('e.name LIKE :searchTerm OR e.description LIKE :searchTerm OR artiste.name LiKE :searchTerm')
+                    ->setParameter('searchTerm', '%' . $criteria['search'] . '%');
+            }
+            unset($criteria['search']);
+
             foreach ($criteria as $key => $value) {
                 $query->andWhere("e.$key = :val")
                     ->setParameter('val', $value);
