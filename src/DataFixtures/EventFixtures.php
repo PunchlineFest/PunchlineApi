@@ -86,7 +86,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
     private function getFirstDayEvents(): iterable
     {
         $faker = $this->fakerFactory;
-        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
+        $date = $faker->dateTimeBetween('12-07-2024 18:00:00', '13-07-2024 02:00:00');
 
         yield [
             'name' => 'Scène principale',
@@ -111,7 +111,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
     private function getSecondDayEvents(): iterable
     {
         $faker = $this->fakerFactory;
-        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
+        $date = $faker->dateTimeBetween('13-07-2024 18:00:00', '14-07-2024 02:00:00');
 
         yield [
             'name' => 'Buvette du Lac',
@@ -124,7 +124,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
         ];
         yield [
             'name' => 'Atelier DJing',
-            'date' => $faker->dateTimeBetween('12-07-2024', '14-07-2024'),
+            'date' => $date,
             'category' => 'rap',
             'type' => 'atelier',
             'description' => $faker->paragraph,
@@ -136,7 +136,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface, Fixtur
     private function getThirdDayEvents(): iterable
     {
         $faker = $this->fakerFactory;
-        $date = $faker->dateTimeBetween('12-07-2024', '14-07-2024');
+        $date = $faker->dateTimeBetween('14-07-2024 18:00:00', '15-07-2024 02:00:00');
 
         yield [
             'name' => 'Atelier de Breakdance',
