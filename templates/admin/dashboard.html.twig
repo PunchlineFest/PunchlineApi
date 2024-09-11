@@ -1,5 +1,9 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
 
-{% block main %}
-    {# ... #}
-{% endblock main %}
+
+    {% block header_logo %}
+        <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path('app.swagger_ui') }}">
+            <span class="logo-custom">{{ ea.dashboardTitle|raw }}</span>
+            <span class="logo-compact"><i class="fas fa-home"></i></span>
+        </a>
+    {% endblock header_logo %}
