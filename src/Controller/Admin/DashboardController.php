@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Artist;
+use App\Entity\Comment;
 use App\Entity\Event;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,6 +32,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
             MenuItem::section('Festival'),
             MenuItem::linkToCrud('Evènements', 'fas fa-calendar', Event::class),
+            MenuItem::linkToCrud('Avis', 'fas fa-comment', Comment::class),
             MenuItem::section('Inscription'),
             MenuItem::linkToCrud('Artistes', 'fa fa-music', Artist::class)
         ];
