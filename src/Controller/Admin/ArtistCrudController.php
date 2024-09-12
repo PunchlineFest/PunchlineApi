@@ -4,8 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Artist;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ArtistCrudController extends AbstractCrudController
@@ -20,7 +19,7 @@ class ArtistCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name', 'Nom'),
-            TextEditorField::new('description', 'Description'),
+            TextareaField::new('description', 'Description'),
             TextField::new('category', 'Genre musical'),
         ];
     }

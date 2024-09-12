@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Repository\CommentRepository;
+use App\Repository\EventRepository;
+use App\Service\ApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,7 +19,9 @@ use OpenApi\Attributes as OA;
 class CommentController extends BaseController
 {
     public function __construct(
-        private CommentRepository $commentRepository
+        private CommentRepository $commentRepository,
+        private EventRepository $eventRepository,
+        private ApiService $apiService,
     )
     {
     }
@@ -35,12 +40,12 @@ class CommentController extends BaseController
         description: 'Server error',
     )]
     #[OA\Parameter(
-        name: 'name',
+        name: 'author',
         in: 'query',
         schema: new OA\Schema(type: 'string')
     )]
     #[OA\Parameter(
-        name: 'category',
+        name: 'eventId',
         in: 'query',
         schema: new OA\Schema(type: 'string')
     )]
@@ -48,11 +53,11 @@ class CommentController extends BaseController
     {
         try {
             $criteria = $request->query->all() ?? [];
-            $orderBy = ['name' => 'DESC'];
+            $orderBy = ['id' => 'DESC'];
 
             $comments = $this->commentRepository->findByAndFilter($criteria, $orderBy);
 
-            return $this->json($comments, 200);
+            return $this->json($this->apiService->handleCircularReference($comments), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage());
         }
@@ -75,13 +80,25 @@ class CommentController extends BaseController
     public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
         try {
+            $event = $this->eventRepository->find($request->getPayload()->get('event'));
+
+            if (!$event) {
+                throw $this->createNotFoundException();
+            }
+
             $comment = new Comment();
-            $this->setProperties($comment, $request->getPayload());
+            $data = [
+                'content' => $request->getPayload()->get('content'),
+                'author' => $request->getPayload()->get('author'),
+            ];
+            $this->setProperties($comment, $data);
+
+            $comment->setEvent($event);
 
             $em->persist($comment);
             $em->flush();
 
-            return $this->json("L'élément a été créé avec succès", 200);
+            return $this->json($this->apiService->handleCircularReference($comment), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage(), 500);
         }
@@ -104,7 +121,7 @@ class CommentController extends BaseController
     public function show(Comment $comment): JsonResponse
     {
         try {
-            return $this->json($comment, 200);
+            return $this->json($this->apiService->handleCircularReference($comment), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage(), 500);
         }

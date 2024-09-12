@@ -8,8 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class EventCrudController extends AbstractCrudController
@@ -26,7 +25,7 @@ class EventCrudController extends AbstractCrudController
             FormField::addTab('Général'),
             FormField::addColumn(6),
             TextField::new('name', 'Titre'),
-            TextEditorField::new('description', 'Description'),
+            TextareaField::new('description', 'Description'),
             TextField::new('type', 'Type d\'évènement'),
             FormField::addColumn(6),
             TextField::new('category', 'Genre'),

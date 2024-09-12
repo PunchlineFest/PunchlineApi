@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Service\ApiService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -17,7 +18,8 @@ use OpenApi\Attributes as OA;
 class EventController extends BaseController
 {
     public function __construct(
-        private EventRepository $eventRepository
+        private EventRepository $eventRepository,
+        private ApiService $apiService
     )
     {}
 
@@ -57,7 +59,7 @@ class EventController extends BaseController
 
             $events = $this->eventRepository->findByAndFilter($criteria, $orderBy);
 
-            return $this->json($events, 200);
+            return $this->json($this->apiService->handleCircularReference($events), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage());
         }
@@ -109,7 +111,7 @@ class EventController extends BaseController
     public function show(Event $event): JsonResponse
     {
         try {
-            return $this->json($event, 200);
+            return $this->json($this->apiService->handleCircularReference($event), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage(), 500);
         }
@@ -231,7 +233,7 @@ class EventController extends BaseController
 
             $events = $this->eventRepository->findByAndFilter($criteria, $orderBy, $groupedBy);
 
-            return $this->json($events, 200);
+            return $this->json($this->apiService->handleCircularReference($events), 200);
         } catch (throwable $e) {
             return $this->json($e->getMessage());
         }

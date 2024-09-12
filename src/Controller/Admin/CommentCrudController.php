@@ -5,8 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Comment;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class CommentCrudController extends AbstractCrudController
@@ -22,7 +21,7 @@ class CommentCrudController extends AbstractCrudController
         return [
             AssociationField::new('event', 'Evènement'),
             TextField::new('author', 'Autheur'),
-            TextEditorField::new('content', 'Contenu')
+            TextareaField::new('content', 'Contenu')
         ];
     }
 

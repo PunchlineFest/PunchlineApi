@@ -16,20 +16,30 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    //    /**
-    //     * @return Comment[] Returns an array of Comment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findByAndFilter($criteria, $orderBy): array
+    {
+        $query = $this->createQueryBuilder('c');
+
+        if (\array_key_exists('eventId', $criteria)) {
+            $query->leftJoin('c.event', 'event') // Joindre la relation artiste
+            ->addSelect('event')
+                ->andWhere('event.id = :eventId')
+                ->setParameter('eventId', $criteria['eventId']);
+        }
+        unset($criteria['eventId']);
+
+        foreach ($criteria as $key => $value) {
+            $query->andWhere("c.$key = :val")
+                ->setParameter('val', $value);
+        }
+
+        foreach ($orderBy as $property => $order) {
+            $query->orderBy("c.$property", $order);
+        }
+
+        return $query->getQuery()
+            ->getResult();
+    }
 
     //    public function findOneBySomeField($value): ?Comment
     //    {
