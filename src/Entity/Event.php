@@ -147,7 +147,11 @@ class Event implements DatedInterface
 
     public function setCoordinates(array $coordinates): static
     {
-        $this->coordinates = $coordinates;
+        $parsedCoordinates = [];
+        foreach ($coordinates as $coordinate) {
+            $parsedCoordinates[] = (float)$coordinate;
+        }
+        $this->coordinates = $parsedCoordinates;
 
         return $this;
     }
