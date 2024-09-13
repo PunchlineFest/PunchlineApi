@@ -31,6 +31,8 @@ class EventCrudController extends AbstractCrudController
             TextField::new('category', 'Genre'),
             AssociationField::new('artists', 'Intervenants'),
             DateTimeField::new('date', 'Date'),
+            DateTimeField::new('startDate', 'Date de début'),
+            DateTimeField::new('endDate', 'Date de fin'),
 
             FormField::addTab('Localisation'),
             TextField::new('address', 'Adresse'),
